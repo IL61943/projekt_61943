@@ -168,4 +168,55 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   }
+
+const itemInput = document.getElementById('itemInput');
+const addBtn = document.getElementById('addBtn');
+const itemList = document.getElementById('itemList');
+
+let savedItems = JSON.parse(localStorage.getItem('myLocalData')) || [];
+
+function renderList() {
+    itemList.innerHTML = ''; 
+
+    savedItems.forEach((text, index) => {
+        const li = document.createElement('li');
+        li.textContent = text;
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'X';
+        deleteBtn.style.marginLeft = '10px';
+        deleteBtn.onclick = () => removeItem(index);
+
+        li.appendChild(deleteBtn);
+        itemList.appendChild(li);
+    });
+}
+
+function addItem() {
+    const value = itemInput.value.trim();
+    
+    if (value) {
+        savedItems.push(value); 
+        updateLocalStorage();  
+        itemInput.value = '';  
+    }
+}
+
+function removeItem(index) {
+    savedItems.splice(index, 1); 
+    updateLocalStorage();       
+}
+
+function updateLocalStorage() {
+
+    localStorage.setItem('myLocalData', JSON.stringify(savedItems));
+    renderList();
+}
+
+addBtn.addEventListener('click', addItem);
+itemInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') addItem();
 });
+renderList();
+});
+
